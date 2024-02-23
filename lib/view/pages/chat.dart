@@ -11,10 +11,10 @@ class Chat extends StatefulWidget {
   final String appUser;
 
   const Chat({
-    Key key,
-    this.deviceId,
-    this.deviceUsername,
-    this.appUser,
+    Key? key,
+    required this.deviceId,
+    required this.deviceUsername,
+    required this.appUser,
   }) : super(key: key);
 
   @override
@@ -22,7 +22,7 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
-  ScrollController _scrollController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _ChatState extends State<Chat> {
                   WidgetsBinding.instance
                       .addPostFrameCallback((_) => _scrollToBottom());
 
-                  var conversation = controller.messages
+                  var conversation = controller.messages.value
                       .where((device) =>
                           device.fromId == widget.deviceId &&
                               device.toUsername == widget.appUser ||
@@ -112,13 +112,13 @@ class _ChatState extends State<Chat> {
                 controller: _messageController,
                 decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey[300]),
+                    borderSide: BorderSide(color: Colors.grey),
                   ),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey[300]),
+                    borderSide: BorderSide(color: Colors.grey),
                   ),
                   border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey[300]),
+                    borderSide: BorderSide(color: Colors.grey),
                   ),
                   hintText: 'Send a message',
                   hintStyle: TextStyle(
@@ -146,13 +146,13 @@ class _ChatState extends State<Chat> {
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
-                    color: Theme.of(context).buttonColor.withOpacity(0.4),
+                    color: Theme.of(context).primaryColor.withOpacity(0.4),
                   ),
                   child: Container(
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).buttonColor,
+                      color: Theme.of(context).primaryColor,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
@@ -180,8 +180,8 @@ class _ChatState extends State<Chat> {
   }
 
   void onSendButtonPress({
-    BuildContext context,
-    TextEditingController controller,
+    required BuildContext context,
+    required TextEditingController controller,
   }) async {
     if (controller.text.isNotEmpty) {
       var connectionState = await DevicesController(context).sendMessage(

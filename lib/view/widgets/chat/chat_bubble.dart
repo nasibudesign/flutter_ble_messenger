@@ -7,7 +7,11 @@ class ChatBubble extends StatelessWidget {
   final String deviceUsername;
   final String appUser;
 
-  const ChatBubble({Key key, this.message, this.deviceUsername, this.appUser})
+  const ChatBubble(
+      {Key? key,
+      required this.message,
+      required this.deviceUsername,
+      required this.appUser})
       : super(key: key);
 
   @override
@@ -49,7 +53,7 @@ class ChatBubble extends StatelessWidget {
             ),
             SizedBox(height: 15),
             Text(
-              message.message,
+              message.message ?? "-",
               style: TextStyle(
                 fontSize: 20,
                 color: message.sent
@@ -60,8 +64,8 @@ class ChatBubble extends StatelessWidget {
             ),
             SizedBox(height: 15),
             Text(
-              DatesController()
-                  .getVerboseDateTimeRepresentation(message.dateTime),
+              DatesController().getVerboseDateTimeRepresentation(
+                  message.dateTime ?? DateTime.now()),
               style: TextStyle(
                 fontSize: 16,
                 color: message.sent

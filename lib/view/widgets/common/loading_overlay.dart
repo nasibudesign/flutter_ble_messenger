@@ -11,7 +11,7 @@ class LoadingOverlay {
     showDialog(
         context: _context,
         barrierDismissible: false,
-        child: _FullScreenLoader());
+        builder: (context) => _FullScreenLoader());
   }
 
   Future<T> during<T>(Future<T> future) {
@@ -34,7 +34,7 @@ class _FullScreenLoader extends StatelessWidget {
       child: Center(
         child: CircularProgressIndicator(
           valueColor:
-              AlwaysStoppedAnimation<Color>(Theme.of(context).buttonColor),
+              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
         ),
       ),
     );

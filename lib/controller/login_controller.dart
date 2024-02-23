@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginController extends GetxController {
-  TextEditingController usernameEditingController;
+  late TextEditingController usernameEditingController;
   var username = ''.obs;
   var isEnabled = false.obs;
 
@@ -31,7 +31,7 @@ class LoginController extends GetxController {
 
     /// Clear the text field and hide the keyboard
     usernameEditingController.clear();
-    FocusManager.instance.primaryFocus.unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
 
     /// Rebuild the GetBuilder
     update();

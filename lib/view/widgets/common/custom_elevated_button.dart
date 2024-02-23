@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 Widget customElevatedButton(
-    {BuildContext context,
-    String label,
-    void Function() callback,
-    double fontSize}) {
+    {required BuildContext context,
+    required String label,
+    required void Function() callback,
+      double? fontSize}) {
   return SizedBox(
     child: ElevatedButton(
       style: ButtonStyle(
@@ -14,7 +14,7 @@ Widget customElevatedButton(
           ),
         ),
         backgroundColor: MaterialStateProperty.resolveWith(
-          (_) => Theme.of(context).buttonColor,
+          (_) => Theme.of(context).primaryColor,
         ),
         textStyle: MaterialStateProperty.resolveWith(
           (states) => TextStyle(color: Colors.black54),

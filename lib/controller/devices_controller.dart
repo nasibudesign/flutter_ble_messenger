@@ -12,7 +12,6 @@ import 'package:nearby_connections/nearby_connections.dart';
 
 class DevicesController extends GetxController {
   final BuildContext context;
-  DevicesController(this.context);
 
   /// **P2P_CLUSTER** is a peer-to-peer strategy that supports an M-to-N,
   /// or cluster-shaped, connection topology.
@@ -28,15 +27,17 @@ class DevicesController extends GetxController {
   var username = ''.obs;
 
   /// List of devices detected
-  var devices = List<Device>().obs;
+  var devices = RxList<Device>().obs;
 
   /// The one who is requesting the info of a device
   var requestorId = '0'.obs;
-  ConnectionInfo requestorDeviceInfo;
+  late ConnectionInfo requestorDeviceInfo;
 
   /// The one who is being requested with an info
   var requesteeId = '0'.obs;
-  ConnectionInfo requesteeDeviceInfo;
+  late ConnectionInfo? requesteeDeviceInfo;
+
+  DevicesController(this.context);
 
   @override
   void onInit() {
@@ -50,7 +51,7 @@ class DevicesController extends GetxController {
   @override
   void onClose() {
     datesController.onClose();
-    messagesController.connectedIdList.clear();
+    messagesController.connectedIdList.close();
     nearby.stopAllEndpoints();
     nearby.stopDiscovery();
     nearby.stopAdvertising();
@@ -66,17 +67,17 @@ class DevicesController extends GetxController {
         onEndpointFound: (id, name, serviceId) {
           /// Remove first the device from the list in case it was already there
           /// This duplication could occur since we combine advertise and discover
-          devices.removeWhere((device) => device.id == id);
+          devices.value.removeWhere((device) => device.id == id);
 
           /// Once an endpoint is found, add it
           /// to the end of the devices observable
-          devices.add(Device(
+          devices.value.add(Device(
               id: id, name: name, serviceId: serviceId, isConnected: false));
         },
         onEndpointLost: (id) {
-          messagesController.onDisconnect(id);
-          devices.removeWhere((device) => device.id == id);
-          nearby.disconnectFromEndpoint(id);
+          messagesController.onDisconnect(id ?? "");
+          devices.value.removeWhere((device) => device.id == id);
+          nearby.disconnectFromEndpoint(id ?? "");
         },
       );
     } catch (e) {
@@ -93,7 +94,7 @@ class DevicesController extends GetxController {
         onConnectionInitiated: (id, info) {
           /// Remove first the device from the list in case it was already there
           /// This duplication could occur since we combine advertise and discover
-          devices.removeWhere((device) => device.id == id);
+          devices.value.removeWhere((device) => device.id == id);
 
           /// We are about to use this info once we add the device to the device list
           requestorDeviceInfo = info;
@@ -106,14 +107,14 @@ class DevicesController extends GetxController {
             messagesController.onConnect(id);
 
             /// Add to device list
-            devices.add(Device(
+            devices.value.add(Device(
                 id: id,
                 name: requestorDeviceInfo.endpointName,
                 serviceId: requestorDeviceInfo.endpointName,
                 isConnected: true));
           } else if (status == Status.REJECTED) {
             /// Add to device list
-            devices.add(Device(
+            devices.value.add(Device(
                 id: id,
                 name: requestorDeviceInfo.endpointName,
                 serviceId: requestorDeviceInfo.endpointName,
@@ -124,7 +125,7 @@ class DevicesController extends GetxController {
           messagesController.onDisconnect(endpointId);
 
           /// Remove the device from the device list
-          devices.removeWhere((device) => device.id == endpointId);
+          devices.value.removeWhere((device) => device.id == endpointId);
         },
       );
     } catch (e) {
@@ -134,11 +135,11 @@ class DevicesController extends GetxController {
 
   /// Request to connect to other devices
   void requestDevice({
-    BuildContext requestContext,
-    String nickname,
-    String deviceId,
-    void onConnectionResult(String endpointId, Status status),
-    void onDisconnected(String endpointId),
+    required BuildContext requestContext,
+    required String nickname,
+    required String deviceId,
+    required void onConnectionResult(String endpointId, Status status),
+    required void onDisconnected(String endpointId),
   }) async {
     final overlay = LoadingOverlay.of(requestContext);
 
@@ -168,7 +169,7 @@ class DevicesController extends GetxController {
   }
 
   /// Disconnect from another device
-  void disconnectDevice({String id, void updateStateFunction()}) {
+  void disconnectDevice({required String id, required void updateStateFunction()}) {
     try {
       messagesController.onDisconnect(id);
       nearby.disconnectFromEndpoint(id);
@@ -179,7 +180,7 @@ class DevicesController extends GetxController {
   }
 
   /// Reject request to connect to another device
-  void rejectConnection({String id}) async {
+  void rejectConnection({required String id}) async {
     try {
       messagesController.onDisconnect(id);
       await nearby.rejectConnection(id);
@@ -189,7 +190,7 @@ class DevicesController extends GetxController {
   }
 
   /// Accept request to connect to another device
-  void acceptConnection({String id, ConnectionInfo info}) async {
+  void acceptConnection({required String id, required ConnectionInfo info}) async {
     try {
       messagesController.onConnect(id);
       nearby.acceptConnection(
@@ -209,20 +210,20 @@ class DevicesController extends GetxController {
 
   /// Send message to another device
   Future<bool> sendMessage(
-      {String toId,
-      String toUsername,
-      String fromId,
-      String fromUsername,
-      String message}) async {
+      { String? toId,
+       String? toUsername,
+      String? fromId,
+       String? fromUsername,
+       String? message}) async {
     try {
-      if (messagesController.isDeviceConnected(toId)) {
-        nearby.sendBytesPayload(toId, Uint8List.fromList(message.codeUnits));
+      if (messagesController.isDeviceConnected(toId??"")) {
+        nearby.sendBytesPayload(toId??"", Uint8List.fromList(message?.codeUnits??[]));
         messagesController.onSendMessage(
             toId: toId ?? '',
             toUsername: toUsername ?? '',
             fromId: fromId ?? '',
             fromUsername: fromUsername ?? '',
-            message: message);
+            message: message??"");
         return true;
       }
       return false;

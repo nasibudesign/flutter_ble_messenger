@@ -11,12 +11,12 @@ import 'package:page_transition/page_transition.dart';
 class DeviceCard extends StatefulWidget {
   final Device device;
   final String username;
-  final List<Message> messages;
+  final List<Message>? messages;
 
   const DeviceCard({
-    Key key,
-    this.device,
-    this.username,
+    Key? key,
+    required this.device,
+    required this.username,
     this.messages,
   }) : super(key: key);
 
@@ -25,13 +25,13 @@ class DeviceCard extends StatefulWidget {
 }
 
 class _DeviceCardState extends State<DeviceCard> {
-  bool isConnected;
-  DevicesController bleMessengerController;
+  bool isConnected = false;
+  late DevicesController bleMessengerController;
 
   @override
   void initState() {
     super.initState();
-    isConnected = widget.device.isConnected;
+    isConnected = widget.device.isConnected ?? false;
     bleMessengerController = DevicesController(context);
   }
 
@@ -60,8 +60,8 @@ class _DeviceCardState extends State<DeviceCard> {
                       context,
                       PageTransition(
                           child: Chat(
-                            deviceId: widget.device.id,
-                            deviceUsername: widget.device.name,
+                            deviceId: widget.device.id ?? "",
+                            deviceUsername: widget.device.name ?? "",
                             appUser: widget.username,
                           ),
                           type: PageTransitionType.fade),
@@ -93,7 +93,7 @@ class _DeviceCardState extends State<DeviceCard> {
                   ),
                 ),
                 title: Text(
-                  widget.device.name,
+                  widget.device.name ?? "",
                   style: TextStyle(
                     fontSize: 24,
                     color: Theme.of(context).primaryColor,
@@ -119,7 +119,7 @@ class _DeviceCardState extends State<DeviceCard> {
                       bleMessengerController.requestDevice(
                         requestContext: context,
                         nickname: widget.username,
-                        deviceId: widget.device.id,
+                        deviceId: widget.device.id ?? "",
                         onConnectionResult: (endpointId, status) {
                           if (status.toString() == 'Status.CONNECTED') {
                             setState(() {
@@ -139,7 +139,7 @@ class _DeviceCardState extends State<DeviceCard> {
                       );
                     } else {
                       bleMessengerController.disconnectDevice(
-                        id: widget.device.id,
+                        id: widget.device.id ?? "",
                         updateStateFunction: () {
                           setState(() {
                             isConnected = false;
@@ -166,10 +166,13 @@ class _DeviceCardState extends State<DeviceCard> {
     if (states.any(interactiveStates.contains)) {
       return isConnected ? Colors.redAccent : Colors.greenAccent;
     }
-    return isConnected ? Colors.red : Theme.of(context).buttonColor;
+    return isConnected ? Colors.red : Theme.of(context).primaryColor;
   }
 
-  String btnLabel({bool condition, String leftText, String rightText}) {
+  String btnLabel(
+      {required bool condition,
+      required String leftText,
+      required String rightText}) {
     return condition ? leftText : rightText;
   }
 }

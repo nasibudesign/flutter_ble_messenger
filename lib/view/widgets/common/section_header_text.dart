@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class SectionHeaderText extends StatelessWidget {
   final String headerText;
-  const SectionHeaderText({Key key, this.headerText}) : super(key: key);
+
+  const SectionHeaderText({Key? key, required this.headerText})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

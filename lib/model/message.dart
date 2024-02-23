@@ -1,14 +1,14 @@
 class Message {
   final bool sent;
-  final String toId;
-  final String toUsername;
-  final String fromId;
-  final String fromUsername;
-  final String message;
-  final DateTime dateTime;
+  final String? toId;
+  final String? toUsername;
+  final String? fromId;
+  final String? fromUsername;
+  final String? message;
+  final DateTime? dateTime;
 
   Message(
-      {this.sent,
+      {required this.sent,
       this.toId,
       this.toUsername,
       this.fromId,

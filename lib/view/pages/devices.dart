@@ -160,12 +160,12 @@ class MessengerBody extends StatelessWidget {
     return GetX<DevicesController>(
       init: DevicesController(context),
       builder: (controller) {
-        return controller.devices.isNotEmpty
+        return controller.devices.value.isNotEmpty
             ? ListView.builder(
-                itemCount: controller.devices.length,
+                itemCount: controller.devices.value.length,
                 itemBuilder: (BuildContext context, int index) {
                   return DeviceCard(
-                    device: controller.devices[index],
+                    device: controller.devices.value[index],
                     username: controller.username.value,
                   );
                 },
@@ -173,7 +173,7 @@ class MessengerBody extends StatelessWidget {
             : Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).buttonColor),
+                      Theme.of(context).primaryColor),
                 ),
               );
       },

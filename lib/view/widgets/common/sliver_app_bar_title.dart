@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class SliverAppBarTitle extends StatefulWidget {
   final Widget child;
+
   const SliverAppBarTitle({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
   }) : super(key: key);
+
   @override
   _SliverAppBarTitleState createState() {
     return new _SliverAppBarTitleState();
@@ -13,8 +15,9 @@ class SliverAppBarTitle extends StatefulWidget {
 }
 
 class _SliverAppBarTitleState extends State<SliverAppBarTitle> {
-  ScrollPosition _position;
-  bool _visible;
+  late ScrollPosition _position;
+  late bool _visible;
+
   @override
   void dispose() {
     _removeListener();
@@ -29,7 +32,7 @@ class _SliverAppBarTitleState extends State<SliverAppBarTitle> {
   }
 
   void _addListener() {
-    _position = Scrollable.of(context)?.position;
+    _position = Scrollable.of(context).position;
     _position?.addListener(_positionListener);
     _positionListener();
   }
@@ -39,7 +42,7 @@ class _SliverAppBarTitleState extends State<SliverAppBarTitle> {
   }
 
   void _positionListener() {
-    final FlexibleSpaceBarSettings settings =
+    final FlexibleSpaceBarSettings? settings =
         context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
     bool visible =
         settings == null || settings.currentExtent <= settings.minExtent;
@@ -51,10 +54,19 @@ class _SliverAppBarTitleState extends State<SliverAppBarTitle> {
   }
 
   @override
+  void initState() {
+    _position = Scrollable.of(context).position;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Visibility(
       visible: _visible,
-      child: widget.child,
+      child: SizedBox(
+        width: double.infinity,
+        child: widget.child,
+      ),
     );
   }
 }

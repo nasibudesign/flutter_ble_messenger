@@ -106,7 +106,7 @@ class Login extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   border: Border(
                                     bottom: BorderSide(
-                                      color: Colors.grey[300],
+                                      color: Colors.grey,
                                     ),
                                   ),
                                 ),
@@ -116,7 +116,7 @@ class Login extends StatelessWidget {
                                   keyboardType: TextInputType.text,
                                   onSubmitted: (string) {
                                     FocusManager.instance.primaryFocus
-                                        .unfocus();
+                                        ?.unfocus();
 
                                     if (settingsController
                                             .isLocationPermitted.value &&
@@ -134,7 +134,7 @@ class Login extends StatelessWidget {
                                         );
                                       } else {
                                         FocusManager.instance.primaryFocus
-                                            .unfocus();
+                                            ?.unfocus();
                                       }
                                     } else {
                                       settingsController.checkLocation(context);
@@ -176,7 +176,7 @@ class Login extends StatelessWidget {
                                     fontSize: 20,
                                     callback: () {
                                       FocusManager.instance.primaryFocus
-                                          .unfocus();
+                                          ?.unfocus();
 
                                       if (settingsController
                                               .isLocationPermitted.value &&

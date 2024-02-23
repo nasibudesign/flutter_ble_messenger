@@ -9,15 +9,15 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> with TickerProviderStateMixin {
-  AnimationController _scaleController;
-  AnimationController _scale2Controller;
-  AnimationController _widthController;
-  AnimationController _positionController;
+  late AnimationController _scaleController;
+  late AnimationController _scale2Controller;
+  late AnimationController _widthController;
+  late AnimationController _positionController;
 
-  Animation<double> _scaleAnimation;
-  Animation<double> _scale2Animation;
-  Animation<double> _widthAnimation;
-  Animation<double> _positionAnimation;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _scale2Animation;
+  late Animation<double> _widthAnimation;
+  late Animation<double> _positionAnimation;
 
   bool hideIcon = false;
 
@@ -160,9 +160,7 @@ class _WelcomeState extends State<Welcome> with TickerProviderStateMixin {
               ),
               Container(
                 padding: EdgeInsets.all((20)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                child: ListView(
                   children: [
                     Fade(
                       1,
@@ -205,7 +203,7 @@ class _WelcomeState extends State<Welcome> with TickerProviderStateMixin {
                                   borderRadius: BorderRadius.circular(50),
                                   // color: Colors.blue.withOpacity(0.4),
                                   color: Theme.of(context)
-                                      .buttonColor
+                                      .primaryColor
                                       .withOpacity(0.4),
                                 ),
                                 child: InkWell(
@@ -231,7 +229,7 @@ class _WelcomeState extends State<Welcome> with TickerProviderStateMixin {
                                                 decoration: BoxDecoration(
                                                   // color: Colors.blue,
                                                   color: Theme.of(context)
-                                                      .buttonColor,
+                                                      .primaryColor,
                                                   shape: BoxShape.circle,
                                                 ),
                                                 child: hideIcon == false

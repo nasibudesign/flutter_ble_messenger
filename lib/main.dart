@@ -16,15 +16,16 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       defaultTransition: Transition.native,
       theme: ThemeData(
+        useMaterial3: false,
         backgroundColor: Colors.white,
         primaryColor: Color(0xFF6c65f8),
-        buttonColor: Color(0xFF69f0ae),
+        //buttonColor: Color(0xFF69f0ae),
         textTheme: Theme.of(context).textTheme.apply(bodyColor: Colors.black54),
       ),
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
         return ScrollConfiguration(
-            behavior: CustomScrollBehavior(), child: child);
+            behavior: CustomScrollBehavior(), child: child ?? Container());
       },
       home: Welcome(),
     );
